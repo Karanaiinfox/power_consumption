@@ -49,23 +49,20 @@ const VoltMLayer = () => {
                 <table className="table bordered-table mb-0" id="dataTable">
                     <thead>
                         <tr>
-                            <th>S.R</th>
+                            
                             <th>Meter Id</th>
                             <th>Total Power Today</th>
                             <th>Total Power This Month</th>
                             <th>Total Peak Today</th>
                             <th>Total Peak This Month</th>
                             <th>Status</th>
-                            <th>Action</th>
+                 
                         </tr>
                     </thead>
                     <tbody>
                         {data?.map((item, index) => (
                             <tr key={index}>
-                                <td>
-                                    <input className="form-check-input" type="checkbox" />
-                                    <label>{index + 1}</label>
-                                </td>
+                                
                                 <td>
                                     <Link to="#" className="text-primary-600">
                                         Meter {item?.meter_id}
@@ -80,16 +77,7 @@ const VoltMLayer = () => {
                                         Normal
                                     </span>
                                 </td>
-                                <td className="d-flex">
-                                    <Link
-                                        to="#"
-                                        className="w-32-px h-32-px me-8 bg-primary-light text-primary-600 rounded-circle d-inline-flex align-items-center justify-content-center"
-                                    >
-                                        <Icon icon="iconamoon:eye-light" />
-                                    </Link>
-                                   
-                          
-                                </td>
+                                
                             </tr>
                         ))}
                     </tbody>

@@ -5,6 +5,7 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 import { Link } from 'react-router-dom';
 import { apiGet, apiPost } from "../services/client";
 import moment from "moment";
+import {toast, ToastContainer } from 'react-toastify';
 
 const UserLists = () => {
 
@@ -44,14 +45,17 @@ const UserLists = () => {
             getData();
             if (res?.data?.status == true) {
                 console.log("success");
+                toast.success("success")
                 getData();
 
             } else {
                 console.log(res);
+                toast.error("error")
 
             }
         } catch (e) {
             console.log(e);
+            toast.error("error")
         } finally {
             setLoading(false);
         }
@@ -145,6 +149,7 @@ const UserLists = () => {
     }, []);
     return (
         <div className="card basic-data-table">
+            <ToastContainer />
             <div className="card-header d-flex justify-content-between">
                 <h5 className="card-title mb-0">All Users</h5>
                 <Link
@@ -309,7 +314,6 @@ const UserLists = () => {
                             {data?.map((item, index) => (
                                 <tr key={index}>
                                     <td>
-                                        {/* <input className="form-check-input" type="checkbox" /> */}
                                         <label>{index + 1}</label>
                                     </td>
                                     <td>

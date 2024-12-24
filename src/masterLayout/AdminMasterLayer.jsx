@@ -2,16 +2,18 @@ import React, { useEffect, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import ThemeToggleButton from "../helper/ThemeToggleButton";
-
+import { apiGet, apiPost } from "../services/client";
+import Avatar from "react-avatar";
 const AdminMasterLayer = ({ children }) => {
     let [sidebarActive, seSidebarActive] = useState(false);
     let [mobileMenu, setMobileMenu] = useState(false);
     const location = useLocation(); // Hook to get the current route
-
+     const [adminData, setAdminData] = useState(null);
+     const[notificationData, setnotificationData] = useState(null)
     const Logout = () => {
         localStorage.removeItem("token");
-     
-      };
+
+    };
 
     useEffect(() => {
         // Function to handle dropdown clicks
@@ -80,7 +82,46 @@ const AdminMasterLayer = ({ children }) => {
     };
 
 
+  
+     const getAdminDetails = async () => {
+            try {
+                const res = await apiGet("admin/admin-profile");
+                if (res?.data?.status === true) {
+                    setAdminData(res?.data?.data);
+                   
+                } else {
+                    console.error(res?.data?.message);
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        };
+    
 
+        const PaymentNotification = async () => {
+            try {
+                const res = await apiGet("admin/payment-notifications");
+                if (res?.data?.status === true) {
+                    console.log("payment-data",res);
+                    setnotificationData(res?.data?.data);
+                    
+                   
+                } else {
+                    console.error(res?.data?.message);
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+
+        useEffect(() => {
+            PaymentNotification();
+            getAdminDetails();
+        }, []);
+    
+
+       
     return (
         <section className={mobileMenu ? "overlay active" : "overlay "}>
             {/* sidebar */}
@@ -152,7 +193,7 @@ const AdminMasterLayer = ({ children }) => {
 
                         <li className="dropdown">
                             <Link to="#">
-                            <Icon icon="proicons:dollar-circle" className="menu-icon" />
+                                <Icon icon="proicons:dollar-circle" className="menu-icon" />
                                 <span>Payment Management</span>
                             </Link>
                             <ul className="sidebar-submenu">
@@ -170,7 +211,7 @@ const AdminMasterLayer = ({ children }) => {
                                         <i className="ri-circle-fill circle-icon text-warning-main w-auto" />History
                                     </NavLink>
                                 </li>
-                              
+
                             </ul>
                         </li>
 
@@ -180,13 +221,30 @@ const AdminMasterLayer = ({ children }) => {
                             <Link to="/manage-subscription">
                                 <Icon
                                     icon="fa-solid:award"
-                                    className="menu-icon" 
+                                    className="menu-icon"
                                 />
                                 <span>Subscription</span>
                             </Link>
                         </li>
 
-                        
+                        <li className="dropdown">
+                            <Link to="#">
+                                <Icon icon="material-symbols-light:settings-b-roll-outline-rounded" className="menu-icon" />
+                                <span>Setting</span>
+                            </Link>
+                            <ul className="sidebar-submenu">
+                                <li>
+                                    <NavLink to="/payment-setting" className={(navData) =>
+                                        navData.isActive ? "active-page" : ""
+                                    }>
+                                        <i className="ri-circle-fill circle-icon text-primary-600 w-auto" /> Payment Setting
+                                    </NavLink>
+                                </li>
+
+
+                            </ul>
+                        </li>
+
                     </ul>
                 </div>
             </aside>
@@ -245,12 +303,14 @@ const AdminMasterLayer = ({ children }) => {
                                                 </h6>
                                             </div>
                                             <span className="text-primary-600 fw-semibold text-lg w-40-px h-40-px rounded-circle bg-base d-flex justify-content-center align-items-center">
-                                                05
+                                               {notificationData?.length}
                                             </span>
                                         </div>
                                         <div className="max-h-400-px overflow-y-auto scroll-sm pe-4">
-                                            <Link
-                                                to="#"
+
+                                            {notificationData?.map((item,index)=>(
+                                                <Link
+                                                to="/pending-request"
                                                 className="px-24 py-12 d-flex align-items-start gap-3 mb-2 justify-content-between"
                                             >
                                                 <div className="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
@@ -262,112 +322,22 @@ const AdminMasterLayer = ({ children }) => {
                                                     </span>
                                                     <div>
                                                         <h6 className="text-md fw-semibold mb-4">
-                                                            Congratulations
+                                                        {item?.comment}
                                                         </h6>
-                                                        <p className="mb-0 text-sm text-secondary-light text-w-200-px">
-                                                            Your profile has been Verified. Your profile has
-                                                            been Verified
-                                                        </p>
+                                                       
                                                     </div>
                                                 </div>
                                                 <span className="text-sm text-secondary-light flex-shrink-0">
-                                                    23 Mins ago
-                                                </span>
+                                                    {item?.amount}
+                                                </span> 
                                             </Link>
-                                            <Link
-                                                to="#"
-                                                className="px-24 py-12 d-flex align-items-start gap-3 mb-2 justify-content-between bg-neutral-50"
-                                            >
-                                                <div className="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
-                                                    <span className="w-44-px h-44-px bg-success-subtle text-success-main rounded-circle d-flex justify-content-center align-items-center flex-shrink-0">
-                                                        <img
-                                                            src="assets/images/notification/profile-1.png"
-                                                            alt=""
-                                                        />
-                                                    </span>
-                                                    <div>
-                                                        <h6 className="text-md fw-semibold mb-4">
-                                                            Ronald Richards
-                                                        </h6>
-                                                        <p className="mb-0 text-sm text-secondary-light text-w-200-px">
-                                                            You can stitch between artboards
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <span className="text-sm text-secondary-light flex-shrink-0">
-                                                    23 Mins ago
-                                                </span>
-                                            </Link>
-                                            <Link
-                                                to="#"
-                                                className="px-24 py-12 d-flex align-items-start gap-3 mb-2 justify-content-between"
-                                            >
-                                                <div className="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
-                                                    <span className="w-44-px h-44-px bg-info-subtle text-info-main rounded-circle d-flex justify-content-center align-items-center flex-shrink-0">
-                                                        AM
-                                                    </span>
-                                                    <div>
-                                                        <h6 className="text-md fw-semibold mb-4">
-                                                            Arlene McCoy
-                                                        </h6>
-                                                        <p className="mb-0 text-sm text-secondary-light text-w-200-px">
-                                                            Invite you to prototyping
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <span className="text-sm text-secondary-light flex-shrink-0">
-                                                    23 Mins ago
-                                                </span>
-                                            </Link>
-                                            <Link
-                                                to="#"
-                                                className="px-24 py-12 d-flex align-items-start gap-3 mb-2 justify-content-between bg-neutral-50"
-                                            >
-                                                <div className="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
-                                                    <span className="w-44-px h-44-px bg-success-subtle text-success-main rounded-circle d-flex justify-content-center align-items-center flex-shrink-0">
-                                                        <img
-                                                            src="assets/images/notification/profile-2.png"
-                                                            alt=""
-                                                        />
-                                                    </span>
-                                                    <div>
-                                                        <h6 className="text-md fw-semibold mb-4">
-                                                            Annette Black
-                                                        </h6>
-                                                        <p className="mb-0 text-sm text-secondary-light text-w-200-px">
-                                                            Invite you to prototyping
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <span className="text-sm text-secondary-light flex-shrink-0">
-                                                    23 Mins ago
-                                                </span>
-                                            </Link>
-                                            <Link
-                                                to="#"
-                                                className="px-24 py-12 d-flex align-items-start gap-3 mb-2 justify-content-between"
-                                            >
-                                                <div className="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
-                                                    <span className="w-44-px h-44-px bg-info-subtle text-info-main rounded-circle d-flex justify-content-center align-items-center flex-shrink-0">
-                                                        DR
-                                                    </span>
-                                                    <div>
-                                                        <h6 className="text-md fw-semibold mb-4">
-                                                            Darlene Robertson
-                                                        </h6>
-                                                        <p className="mb-0 text-sm text-secondary-light text-w-200-px">
-                                                            Invite you to prototyping
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <span className="text-sm text-secondary-light flex-shrink-0">
-                                                    23 Mins ago
-                                                </span>
-                                            </Link>
+
+                                            ))}
+                                            
                                         </div>
                                         <div className="text-center py-12 px-16">
                                             <Link
-                                                to="#"
+                                                to="/pending-request"
                                                 className="text-primary-600 fw-semibold text-md"
                                             >
                                                 See All Notification
@@ -382,17 +352,14 @@ const AdminMasterLayer = ({ children }) => {
                                         type="button"
                                         data-bs-toggle="dropdown"
                                     >
-                                        <img
-                                            src="assets/images/user-image.jpg"
-                                            alt="image_user"
-                                            className="w-40-px h-40-px object-fit-cover rounded-circle"
-                                        />
+                                          <Avatar name={`${adminData?.first_name || ""} ${adminData?.last_name || ""}`} 
+                                          className="w-40-px h-40-px object-fit-cover rounded-circle"/>
                                     </button>
                                     <div className="dropdown-menu to-top dropdown-menu-sm">
                                         <div className="py-12 px-16 radius-8 bg-primary-50 mb-16 d-flex align-items-center justify-content-between gap-2">
                                             <div>
                                                 <h6 className="text-lg text-primary-light fw-semibold mb-2">
-                                                    Parkash
+                                                    {adminData?.first_name}  {adminData?.last_name}
                                                 </h6>
                                                 <span className="text-secondary-light fw-medium text-sm">Admin</span>
                                             </div>
@@ -404,24 +371,13 @@ const AdminMasterLayer = ({ children }) => {
                                             <li>
                                                 <Link
                                                     className="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3"
-                                                    to="/view-profile"
+                                                    to="/admin-profile"
                                                 >
                                                     <Icon icon="solar:user-linear" className="icon text-xl" /> My
                                                     Profile
                                                 </Link>
                                             </li>
-                                            <li>
-                                                <Link
-                                                    className="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3"
-                                                    to="/company"
-                                                >
-                                                    <Icon
-                                                        icon="icon-park-outline:setting-two"
-                                                        className="icon text-xl"
-                                                    />
-                                                    Setting
-                                                </Link>
-                                            </li>
+                                          
                                             <li>
                                                 <Link
                                                     className="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-danger d-flex align-items-center gap-3"

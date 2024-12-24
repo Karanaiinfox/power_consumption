@@ -13945,3 +13945,28 @@ span.dt-column-order {
 .text-dir{
   text-align: right;
 }
+.dashboard-main-body{
+  position: relative;
+}
+.dashboard-main{
+  position: relative;
+}
+.success-alert {
+  position: absolute;
+  top: 0;
+  right: 50px;
+}
+text#SvgjsText1932 {
+  display: none;
+}
+.apexcharts-toolbar {
+  display: none !important;
+} 
+h2.scanh2 {
+  font-size: 46px !important;
+  margin-bottom: 40px;
+  font-weight: 400;
+}
+.sb-avatar__text{
+  border-radius: 50%;
+}
